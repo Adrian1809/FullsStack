@@ -47,9 +47,9 @@ npm run dev
 ```
 ---
 ### Accesos
--Frontend: http://localhost:5173
--Backend: http://localhost:8000
--Swagger: http://localhost:8000/swagger.html
+- Frontend: http://localhost:5173
+- Backend: http://localhost:8000
+- Swagger: http://localhost:8000/swagger.html
 ---
 ### Credenciales
 email: admin@test.com
@@ -59,10 +59,10 @@ password: 123456
 POST/api/login
 
 ### Usuarios
--GET /api/users
--POST /api/users
--PUT /api/users/{id}
--DELETE /api/users/{id}
+- GET /api/users
+- POST /api/users
+- PUT /api/users/{id}
+- DELETE /api/users/{id}
 
 ### Swagger
 http://localhost:8000/swagger.html
@@ -93,6 +93,6 @@ User::create([
 php artisan db:seed
 
 ### Notas
--Todas las rutas protegidas requieren token Bearer
--El token se obtiene desde el endpoint /api/login
--Se incluye colección de Postman para pruebas (opcional)
+- Todas las rutas protegidas requieren token Bearer
+- El token se obtiene desde el endpoint /api/login
+- Se incluye colección de Postman para pruebas (opcional)
