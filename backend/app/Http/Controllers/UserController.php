@@ -10,26 +10,49 @@ class UserController extends Controller
 {
    public function index()
     {
-        return User::select('id', 'name', 'email')->get();
+        $user = auth()->user();
+        
+        // Si es admin, retorna todos los usuarios
+        if ($user->role === 'admin') {
+            return User::select('id', 'name', 'email', 'role', 'created_at')->get();
+        }
+        
+        // Si es usuario regular, retorna solo su propio usuario
+        return User::where('id', $user->id)->select('id', 'name', 'email', 'role', 'created_at')->get();
     }
 
     public function show($id)
     {
-        return User::findOrFail($id);
+        $user = auth()->user();
+        $targetUser = User::findOrFail($id);
+        
+        // Un usuario puede ver su propio perfil, los admins ven a cualquiera
+        if ($user->id !== $targetUser->id && $user->role !== 'admin') {
+            return response()->json(['message' => 'No tienes permiso para ver este usuario'], 403);
+        }
+        
+        return $targetUser;
+    }
+
+    public function me()
+    {
+        return auth()->user();
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'role' => 'sometimes|in:user,admin'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'role' => $request->role ?? 'user'
         ]);
 
         return response()->json($user, 201);
@@ -40,18 +63,19 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'sometimes|string',
+            'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:users,email,' . $id,
-            'password' => 'sometimes|min:6'
+            'password' => 'sometimes|min:6',
+            'role' => 'sometimes|in:user,admin'
         ]);
 
-        $user->update([
-            'name' => $request->name ?? $user->name,
-            'email' => $request->email ?? $user->email,
-            'password' => $request->password 
-                ? Hash::make($request->password) 
-                : $user->password
-        ]);
+        $data = [];
+        if ($request->has('name')) $data['name'] = $request->name;
+        if ($request->has('email')) $data['email'] = $request->email;
+        if ($request->has('password')) $data['password'] = Hash::make($request->password);
+        if ($request->has('role')) $data['role'] = $request->role;
+
+        $user->update($data);
 
         return response()->json($user);
     }

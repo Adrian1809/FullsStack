@@ -19,12 +19,19 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 // 🔒 Rutas protegidas con token
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Obtener usuario autenticado
+    // Ver usuarios (cualquier usuario autenticado)
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::post('/users', [UserController::class, 'store']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+    // Gestión de usuarios (requiere rol admin)
+    Route::middleware('is.admin')->group(function () {
+        Route::post('/users', [UserController::class, 'store']);
+        Route::put('/users/{id}', [UserController::class, 'update']);
+        Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    });
+
+    // Obtener usuario actual
+    Route::get('/me', [UserController::class, 'me']);
 
     });
 /*Route::middleware('auth:sanctum')->get('/users', function () {

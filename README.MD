@@ -1,4 +1,7 @@
-# Fullstack App (Laravel + Vue + PostgreSQL)
+# FullStack2
+
+## Descripción
+Aplicación Fullstack con **Laravel 11** en el backend, **Vue 3 + Vite** en el frontend y **PostgreSQL** como base de datos. El proyecto está montado con **Docker** y usa un contenedor para `backend` y otro para `postgres`.
 
 ## Tecnologías
 - Laravel 11
@@ -6,93 +9,91 @@
 - PostgreSQL
 - Docker
 
----
+## Requisitos
+- Docker y Docker Compose instalados
+- Node.js/npm (para frontend)
 
-## ⚙️Instalación
+## Estructura principal
+- `backend/` - aplicación Laravel
+- `frontend/frontend/` - aplicación Vue 3
+- `docker-compose.yml` - orquesta backend y postgres
 
-### 1. Clonar repositorio
+## Inicio rápido
 
-```bash
-git clone <repo>
-cd FullStack2
-```
----
-### 2. Levantar Docker
+### 1. Levantar los contenedores
+
 ```bash
 docker compose up -d --build
 ```
----
-### 3. Entrar al backend
+
+### 2. Ejecutar migraciones y seeders
+
 ```bash
-docker exec -it fullstack_backend sh
-```
----
-### 4. Instalar Laravel
-```bash
+cd backend
 composer install
 php artisan key:generate
 php artisan migrate
+php artisan db:seed --class=TestUsersSeeder
 ```
----
-### 5. Levantar servidor
+
+> Si ya tienes la base instalada, solo ejecuta `php artisan migrate`.
+
+### 3. Iniciar frontend
+
 ```bash
-php artisan serve --host=0.0.0.0 --port=8000
-```
----
-### 6. Frontend
-```bash
-cd frontend
+cd frontend/frontend
 npm install
 npm run dev
 ```
----
-### Accesos
-- Frontend: http://localhost:5173
-- Backend: http://localhost:8000
-- Swagger: http://localhost:8000/swagger.html
----
-### Credenciales
-email: admin@test.com
-password: 123456
 
-### API
-POST/api/login
+## URLs
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8000/api`
+- Swagger: `http://localhost:8000/swagger.html`
 
-### Usuarios
-- GET /api/users
-- POST /api/users
-- PUT /api/users/{id}
-- DELETE /api/users/{id}
+## Base de datos
+Sí, el proyecto está configurado para usar **PostgreSQL**.
+La conexión está definida en `backend/.env` como:
 
-### Swagger
-http://localhost:8000/swagger.html
-
----
-
-# PARTE 3 — Seeder (para que no dependan de Tinker)
-
----
-
-## Crear seeder:
-
-```bash
-php artisan make:seeder UserSeeder
+```env
+DB_CONNECTION=pgsql
+DB_HOST=postgres
+DB_PORT=5432
+DB_DATABASE=fullstack_db
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
 ```
-### Código
-```bash
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
-User::create([
-    'name' => 'Admin',
-    'email' => 'admin@test.com',
-    'password' => Hash::make('123456')
-]);
-```
-### Ejecutar
-php artisan db:seed
+## Usuarios de prueba
+| Usuario | Contraseña | Rol |
+| --- | --- | --- |
+| admin@example.com | admin123 | admin |
+| user@example.com | user123 | user |
 
-### Notas
-- Todas las rutas protegidas requieren token Bearer
-- El token se obtiene desde el endpoint /api/login
-- Se incluye colección de Postman para pruebas (opcional)
+## Comportamiento de roles
+- **Admin**: puede ver y gestionar todos los usuarios desde el dashboard.
+- **Usuario regular**: solo puede ver su propio perfil.
+
+## API principal
+- `POST /api/login`
+- `GET /api/users`
+- `GET /api/users/{id}`
+- `GET /api/me`
+- `POST /api/users` (solo admin)
+- `PUT /api/users/{id}` (solo admin)
+- `DELETE /api/users/{id}` (solo admin)
+
+## Notas importantes
+- El backend corre en el contenedor `fullstack_backend` y la base de datos en `fullstack_postgres`.
+- El frontend vive en `frontend/frontend/`, no en `frontend/` directamente.
+- El dashboard hace auth con token Bearer y guarda el token en `localStorage`.
+- Si necesitas reconstruir el proyecto desde cero, ejecuta `docker compose down -v` y luego `docker compose up -d --build`.
+
+## Uso diario
+1. Abre el frontend en `http://localhost:5173`
+2. Inicia sesión con el usuario admin: `admin@example.com` / `admin123`
+3. Administra usuarios desde el dashboard
+
+## Extras
+- Swagger disponible en `http://localhost:8000/swagger.html`
+- El endpoint `/api/me` devuelve el usuario autenticado

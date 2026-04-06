@@ -159,6 +159,7 @@ const login = async () => {
     })
 
     localStorage.setItem('token', res.data.access_token)
+    localStorage.setItem('user', JSON.stringify(res.data.user))
     setTimeout(() => {
       window.location.href = '/dashboard'
     }, 500)
