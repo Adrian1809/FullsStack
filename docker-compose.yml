@@ -1,0 +1,50 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: fullstack_postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: fullstack_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - fullstack_network
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: fullstack_backend
+    restart: unless-stopped
+
+    working_dir: /var/www
+    
+    command: sh -c "while true; do sleep 1000; done"
+
+
+    volumes:
+      - ./backend:/var/www
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - postgres
+
+    networks:
+      - fullstack_network
+
+volumes:
+  postgres_data:
+
+networks:
+  fullstack_network:
+    driver: bridge

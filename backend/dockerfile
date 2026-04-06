@@ -1,0 +1,25 @@
+FROM php:8.2-cli-alpine
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache \
+    git \
+    curl \
+    zip \
+    unzip \
+    postgresql-dev \
+    oniguruma-dev \
+    libxml2-dev \
+    $PHPIZE_DEPS
+
+# Instalar extensiones PHP necesarias para Laravel + PostgreSQL
+RUN docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    mbstring \
+    xml
+
+# Instalar Composer (oficial)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Definir directorio de trabajo
+WORKDIR /var/www

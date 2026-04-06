@@ -1,0 +1,83 @@
+openapi: 3.0.0
+info:
+  title: Fullstack API
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+
+paths:
+  /api/login:
+    post:
+      summary: Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: admin@test.com
+                password:
+                  type: string
+                  example: 123456
+      responses:
+        '200':
+          description: Login exitoso
+
+  /api/users:
+    get:
+      summary: Obtener usuarios
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de usuarios
+
+    post:
+      summary: Crear usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Usuario creado
+
+  /api/users/{id}:
+    get:
+      summary: Obtener usuario
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Usuario encontrado
+
+    put:
+      summary: Actualizar usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Usuario actualizado
+
+    delete:
+      summary: Eliminar usuario
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Usuario eliminado
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
