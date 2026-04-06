@@ -79,6 +79,7 @@ http://localhost:8000/swagger.html
 php artisan make:seeder UserSeeder
 ```
 ### Código
+```bash
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -87,7 +88,7 @@ User::create([
     'email' => 'admin@test.com',
     'password' => Hash::make('123456')
 ]);
-
+```
 ### Ejecutar
 php artisan db:seed
 
