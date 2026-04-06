@@ -20,13 +20,76 @@ Aplicación Fullstack con **Laravel 11** en el backend, **Vue 3 + Vite** en el f
 
 ## Inicio rápido
 
-### 1. Levantar los contenedores
+### 1. Abrir el proyecto
+
+Entra a la carpeta del proyecto desde la terminal:
+
+```bash
+cd FullStack2
+```
+
+### 2. Levantar Docker
+
+Este proyecto usa Docker para el backend y la base de datos PostgreSQL. Ejecuta:
 
 ```bash
 docker compose up -d --build
 ```
 
-### 2. Ejecutar migraciones y seeders
+Esto crea tres cosas importantes:
+- el contenedor `postgres` con la base de datos
+- el contenedor `backend` con Laravel
+- la red entre ellos
+
+### 3. Configurar el backend dentro de Docker
+
+Si no tienes PHP ni Composer instalados en tu equipo, usa el contenedor Laravel.
+Abre una terminal nueva y ejecuta:
+
+```bash
+docker compose exec backend sh
+```
+
+Dentro del contenedor, ejecuta:
+
+```bash
+composer install
+php artisan key:generate
+php artisan migrate
+php artisan db:seed --class=TestUsersSeeder
+```
+
+> Si ya hiciste las migraciones antes, solo necesitas `php artisan migrate`.
+
+### 4. Iniciar el servidor Laravel
+
+Dentro del mismo contenedor backend, inicia el servidor:
+
+```bash
+php artisan serve --host=0.0.0.0 --port=8000
+```
+
+Deja esta terminal abierta mientras trabajas.
+
+### 5. Iniciar el frontend
+
+En otra terminal desde el proyecto, ve a la carpeta del frontend:
+
+```bash
+cd frontend/frontend
+npm install
+npm run dev
+```
+
+### 6. Acceder a la aplicación
+
+- Frontend: `http://localhost:5173`
+- Backend API: `http://localhost:8000/api`
+- Swagger: `http://localhost:8000/swagger.html`
+
+### Uso sin Docker (opcional)
+
+Si ya tienes PHP, Composer y PostgreSQL instalados en tu equipo, puedes ejecutar el backend localmente:
 
 ```bash
 cd backend
@@ -34,11 +97,10 @@ composer install
 php artisan key:generate
 php artisan migrate
 php artisan db:seed --class=TestUsersSeeder
+php artisan serve --host=127.0.0.1 --port=8000
 ```
 
-> Si ya tienes la base instalada, solo ejecuta `php artisan migrate`.
-
-### 3. Iniciar frontend
+Y luego el frontend:
 
 ```bash
 cd frontend/frontend
