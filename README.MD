@@ -25,7 +25,7 @@ Aplicación Fullstack con **Laravel 11** en el backend, **Vue 3 + Vite** en el f
 Entra a la carpeta del proyecto desde la terminal:
 
 ```bash
-cd FullStack2
+cd FullsStack
 ```
 
 ### 2. Levantar Docker
