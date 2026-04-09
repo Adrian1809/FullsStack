@@ -29,7 +29,6 @@ cd FullStack2
 ```
 
 ### 2. Levantar Docker
-
 Este proyecto usa Docker para el backend y la base de datos PostgreSQL. Ejecuta:
 
 ```bash
@@ -42,7 +41,12 @@ Esto crea tres cosas importantes:
 - la red entre ellos
 
 ### 3. Configurar el backend dentro de Docker
-
+Previo a esto debemos de copiar el .env..example con
+```bash
+cd backend
+cp .env.exapmple .env
+cd ../
+```
 Si no tienes PHP ni Composer instalados en tu equipo, usa el contenedor Laravel.
 Abre una terminal nueva y ejecuta:
 
